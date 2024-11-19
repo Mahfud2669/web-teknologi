@@ -1,14 +1,22 @@
+'use client';
+
 import { lusitana } from "@/app/ui/fonts";
 import Image from 'next/image';
 import {
     AtSymbolIcon,
     KeyIcon,
-    //ExclamationCircleIcon,
+    ExclamationCircleIcon,
     } from '@heroicons/react/24/outline';
     import { ArrowRightIcon } from '@heroicons/react/20/solid';
     import { Button } from '@/app/ui/button';
+    import { useActionState } from "react";
+    import { authenticate } from "../lib/action";
 
 export default function Page() {
+    const [errorMessage, fromAction, isPending] = useActionState(
+        authenticate,
+        undefined,
+    );
     return (
         <main className="flex min-h-screen flex-col p-6">
             <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -21,7 +29,7 @@ export default function Page() {
                 />
             </div>
             <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20 m auto">
-                <form className="space-y-3">
+                <form action={fromAction} className="space-y-3">
                     <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
                         <h1 className={`${lusitana.className} mb-3 text-2x1`}>
                             Silahkan Masuk Dengan Akun Anda
@@ -70,7 +78,12 @@ export default function Page() {
                             Masuk <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50"></ArrowRightIcon>
                         </Button>
                         <div className="flex h-8 items-end space-x-1">
-                            {/* Add Form Errors Here */ }
+                            {errorMessage && (
+                                <>
+                                <ExclamationCircleIcon className="h-5 w-5 text-red-500"></ExclamationCircleIcon>
+                                <p className="text-sm text-red-500">{errorMessage}</p>
+                                </>
+                            )}
                         </div>
                     </div>
                 </form>
